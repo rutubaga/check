@@ -1,0 +1,672 @@
+<title>Сколько текста влезает в баннер — гайд для копирайтеров</title>
+<style>
+  :root {
+    --ink:#151320; --ink-soft:#56506b; --ink-faint:#8b849f;
+    --ground:#faf9fe; --surface:#ffffff; --line:#e4e0f0; --line-soft:#efecf8;
+    --brand:#6a50d2; --tint:#efecfb;
+    --ok:#357b3f; --ok-bg:#eaf3ea; --bad:#d22d53; --bad-bg:#fceaee; --warn:#b8791f;
+    --r1:#4192cf; --r2:#357b3f; --r3:#78b145; --r4:#f1be49;
+    --r5:#de7a3b; --r6:#d22d53; --r7:#8c4f93; --r8:#5b579d;
+    --font-body: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-prod: Gotham, -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink:#ece9f6; --ink-soft:#a9a2c0; --ink-faint:#7b7396;
+      --ground:#121019; --surface:#1b1826; --line:#302a44; --line-soft:#241f34;
+      --brand:#9b83f0; --tint:#241f3a;
+      --ok:#7cc186; --ok-bg:#1c2a1f; --bad:#f4718f; --bad-bg:#2e1720; --warn:#e0a94e;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ink:#ece9f6; --ink-soft:#a9a2c0; --ink-faint:#7b7396;
+    --ground:#121019; --surface:#1b1826; --line:#302a44; --line-soft:#241f34;
+    --brand:#9b83f0; --tint:#241f3a;
+    --ok:#7cc186; --ok-bg:#1c2a1f; --bad:#f4718f; --bad-bg:#2e1720; --warn:#e0a94e;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--ground); color: var(--ink);
+    font-family: var(--font-body); font-size: 17px; line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { max-width: 820px; margin: 0 auto; padding: 0 24px 96px; }
+
+  .rainbow { display: flex; height: 5px; border-radius: 3px; overflow: hidden; }
+  .rainbow i { flex: 1; }
+  .rainbow i:nth-child(1){background:var(--r1)} .rainbow i:nth-child(2){background:var(--r2)}
+  .rainbow i:nth-child(3){background:var(--r3)} .rainbow i:nth-child(4){background:var(--r4)}
+  .rainbow i:nth-child(5){background:var(--r5)} .rainbow i:nth-child(6){background:var(--r6)}
+  .rainbow i:nth-child(7){background:var(--r7)} .rainbow i:nth-child(8){background:var(--r8)}
+
+  header { padding: 52px 0 0; }
+  header .rainbow { width: 96px; }
+  h1 {
+    font-size: clamp(32px, 5.4vw, 44px); line-height: 1.07;
+    letter-spacing: -0.028em; font-weight: 800; margin: 20px 0 12px; text-wrap: balance;
+  }
+  .lede { font-size: 19px; color: var(--ink-soft); margin: 0; max-width: 56ch; }
+
+  section { margin-top: 60px; }
+  section > .rainbow { width: 52px; }
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 11.5px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--ink-faint); margin: 14px 0 8px;
+  }
+  h2 { font-size: 26px; line-height: 1.2; letter-spacing: -0.02em; font-weight: 800; margin: 0 0 12px; text-wrap: balance; }
+  h3 { font-size: 18px; font-weight: 700; letter-spacing: -0.01em; margin: 30px 0 8px; }
+  p { margin: 0 0 14px; max-width: 64ch; }
+  .muted { color: var(--ink-soft); }
+  .small { font-size: 14.5px; }
+
+  /* ---------- checker ---------- */
+  .tool { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 22px; }
+  .widths { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px; }
+  .widths button {
+    font-size: 13.5px; padding: 7px 13px; border-radius: 999px;
+    border: 1px solid var(--line); background: transparent; color: var(--ink-soft); cursor: pointer;
+  }
+  .widths button[aria-pressed="true"] { background: var(--brand); border-color: var(--brand); color: #fff; }
+  .widths button:focus-visible, .ex:focus-visible, textarea:focus-visible {
+    outline: 2px solid var(--brand); outline-offset: 2px;
+  }
+  .tool-grid { display: grid; grid-template-columns: minmax(280px, 1fr) auto; gap: 28px; align-items: start; }
+  @media (max-width: 720px) { .tool-grid { grid-template-columns: 1fr; } }
+
+  label.fld { display: block; margin-bottom: 16px; }
+  label.fld > span {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 12px;
+    font-size: 13px; font-weight: 600; color: var(--ink-soft); margin-bottom: 6px;
+  }
+  label.fld em {
+    font-style: normal; font-family: var(--font-mono); font-size: 12px;
+    font-variant-numeric: tabular-nums; color: var(--ink-faint);
+  }
+  label.fld em.over { color: var(--bad); }
+  textarea {
+    width: 100%; resize: vertical;
+    font-family: var(--font-body); font-size: 15px; line-height: 1.45;
+    color: var(--ink); background: var(--ground);
+    border: 1px solid var(--line); border-radius: 9px; padding: 10px 12px;
+  }
+  .gauge-track { height: 9px; border-radius: 999px; background: var(--line-soft); overflow: hidden; }
+  .gauge-fill { height: 100%; width: 0; background: var(--brand); border-radius: 999px; transition: width .18s ease, background .18s ease; }
+  @media (prefers-reduced-motion: reduce) { .gauge-fill { transition: none; } }
+
+  .verdict { margin-top: 12px; padding: 12px 14px; border-radius: 9px; font-size: 15px; line-height: 1.5; }
+  .verdict.ok { background: var(--ok-bg); color: var(--ok); }
+  .verdict.bad { background: var(--bad-bg); color: var(--bad); }
+  .verdict .v-title { font-weight: 700; }
+  .verdict ul { margin: 6px 0 0; padding-left: 18px; }
+  .verdict li { margin: 3px 0; }
+
+  .examples { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; align-items: center; }
+  .examples .lbl { font-size: 13px; color: var(--ink-faint); margin-right: 2px; }
+  .ex {
+    font-size: 13px; padding: 5px 11px; border-radius: 999px;
+    border: 1px dashed var(--line); background: transparent; color: var(--ink-soft); cursor: pointer;
+  }
+
+  /* ---------- 1:1 banner ---------- */
+  .mock-wrap { flex: 0 0 auto; }
+  .mock-label { font-size: 13px; margin-bottom: 8px; display: flex; align-items: center; gap: 7px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .is-ok { color: var(--ok); } .is-ok .dot { background: var(--ok); }
+  .is-bad { color: var(--bad); } .is-bad .dot { background: var(--bad); }
+
+  .mock {
+    width: 335px; height: 240px; background: #efecfb; border-radius: 10px;
+    overflow: hidden; position: relative;
+    font-family: var(--font-prod); color: #0d0d0d;
+    box-shadow: 0 0 0 1px rgba(21,19,32,.14);
+  }
+  .mock .rainbow { height: 8px; border-radius: 0; }
+  .mock.is-over { box-shadow: 0 0 0 2px var(--bad); }
+  .mock-art {
+    position: absolute; top: 8px; right: 0; bottom: 0; width: 140px;
+    background: repeating-linear-gradient(-45deg, rgba(106,80,210,.13) 0 6px, transparent 6px 12px);
+    border-left: 1px dashed rgba(106,80,210,.45);
+    display: flex; align-items: flex-end; justify-content: center; padding-bottom: 10px;
+  }
+  .mock-art span {
+    font-size: 11px; color: #6a50d2; background: rgba(255,255,255,.86);
+    padding: 2px 7px; border-radius: 4px;
+  }
+  .mock-inner { position: absolute; inset: 8px 20px 0; }
+  .mock-col {
+    width: 155px; height: 232px; display: flex; flex-direction: column;
+    align-items: flex-start; justify-content: center;
+  }
+  .mock-col .t { font-size: 24px; line-height: 28px; font-weight: 500; margin: 0 0 12px; }
+  .mock-col .p { font-size: 16px; line-height: 22px; font-weight: 400; margin: 0 0 20px; }
+  .mock-col .t:empty, .mock-col .p:empty { display: none; }
+  .mock-col .t div, .mock-col .p div { white-space: pre; }
+  .cutbadge {
+    position: absolute; right: 8px; bottom: 8px; z-index: 4;
+    font-size: 11px; line-height: 1.35; color: #fff; background: #d22d53;
+    padding: 3px 8px; border-radius: 5px; text-align: right;
+  }
+  .caption { font-size: 13.5px; color: var(--ink-faint); margin-top: 10px; max-width: 44ch; line-height: 1.45; }
+
+  /* ---------- limits strip ---------- */
+  .spec {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+    background: var(--line); border: 1px solid var(--line); border-radius: 12px;
+    overflow: hidden; margin: 22px 0 0;
+  }
+  .spec div { background: var(--surface); padding: 18px 20px; }
+  .spec b {
+    display: block; font-family: var(--font-mono); font-size: 30px; font-weight: 600;
+    letter-spacing: -0.02em; color: var(--brand); font-variant-numeric: tabular-nums;
+  }
+  .spec span { display: block; font-size: 14px; color: var(--ink-soft); line-height: 1.35; margin-top: 4px; }
+
+  .mocks { display: flex; flex-wrap: wrap; gap: 28px; margin: 24px 0 0; }
+
+  /* ---------- tables ---------- */
+  .tw { overflow-x: auto; margin: 20px 0 0; border: 1px solid var(--line); border-radius: 12px; }
+  table { border-collapse: collapse; width: 100%; font-size: 15px; }
+  th, td { padding: 11px 16px; text-align: left; border-bottom: 1px solid var(--line-soft); white-space: nowrap; }
+  th {
+    font-family: var(--font-mono); font-size: 11.5px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--ink-faint); font-weight: 500; background: var(--line-soft);
+  }
+  tbody tr:last-child td { border-bottom: 0; }
+  td.n { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  .tag { font-size: 13px; padding: 2px 9px; border-radius: 5px; }
+  .tag.ok { background: var(--ok-bg); color: var(--ok); }
+  .tag.bad { background: var(--bad-bg); color: var(--bad); }
+
+  /* ---------- before / after ---------- */
+  .pair { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); margin-top: 14px; overflow: hidden; }
+  .pair-row { display: grid; grid-template-columns: 24px 1fr auto; gap: 12px; align-items: start; padding: 14px 16px; }
+  .pair-row + .pair-row { border-top: 1px solid var(--line-soft); }
+  .pair-row .mark { font-size: 16px; line-height: 1.55; }
+  .pair-row.was { background: var(--bad-bg); }
+  .pair-row.now { background: var(--ok-bg); }
+  .pair-row .txt { font-size: 15px; line-height: 1.45; }
+  .pair-row .txt strong { display: block; font-weight: 700; }
+  .pair-row .cnt { font-family: var(--font-mono); font-size: 12.5px; white-space: nowrap; padding-top: 3px; }
+  .was .cnt { color: var(--bad); } .now .cnt { color: var(--ok); }
+
+  /* ---------- word demo ---------- */
+  .worddemo { display: flex; flex-wrap: wrap; gap: 28px; align-items: flex-start; margin-top: 22px; }
+  .wordbox {
+    width: 155px; background: var(--tint); border: 1px solid var(--line);
+    border-right: 2px dashed var(--bad); padding: 10px 0 10px 10px;
+    font-family: var(--font-prod); font-size: 16px; line-height: 22px; color: var(--ink);
+  }
+  .wordbox.t24 { font-size: 24px; line-height: 28px; font-weight: 500; }
+  .wordbox .over { color: var(--bad); white-space: nowrap; }
+
+  ul.rules { margin: 12px 0 0; padding: 0; list-style: none; max-width: 64ch; }
+  ul.rules li { padding: 9px 0 9px 26px; position: relative; border-bottom: 1px solid var(--line-soft); font-size: 15.5px; }
+  ul.rules li:last-child { border-bottom: 0; }
+  ul.rules li::before {
+    content: ""; position: absolute; left: 4px; top: 18px;
+    width: 7px; height: 7px; border-radius: 2px; background: var(--brand);
+  }
+  .nbsp-demo {
+    display: inline-block; background: var(--warn); color: #fff;
+    border-radius: 3px; padding: 0 3px; font-size: 0.85em; vertical-align: 1px;
+  }
+  footer { margin-top: 68px; padding-top: 22px; border-top: 1px solid var(--line); font-size: 13.5px; color: var(--ink-faint); }
+</style>
+
+<div class="page">
+
+<header>
+  <div class="rainbow"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <h1>Сколько текста влезает в главный баннер</h1>
+  <p class="lede">Текст стоит в узкой колонке слева от картинки. Что не влезло — обрезается.</p>
+</header>
+
+<section style="margin-top:34px">
+  <div class="tool">
+    <div class="widths" role="group" aria-label="Размер телефона">
+      <button type="button" data-w="320">Маленький (320 px)</button>
+      <button type="button" data-w="375" aria-pressed="true">Обычный (375 px)</button>
+      <button type="button" data-w="414">Большой (414 px)</button>
+    </div>
+
+    <div class="tool-grid">
+      <div>
+        <label class="fld">
+          <span>Заголовок <em id="c-t">0</em></span>
+          <textarea id="in-t" rows="2" spellcheck="false">Кешбэк до 3%</textarea>
+        </label>
+        <label class="fld">
+          <span>Описание <em id="c-p">0</em></span>
+          <textarea id="in-p" rows="4" spellcheck="false">за билеты на поезда дальнего следования в «Туту», «Туту: ЖД билеты на поезда онлайн» и «Яндекс Путешествия»</textarea>
+        </label>
+
+        <div class="gauge-track"><div class="gauge-fill" id="fill"></div></div>
+        <div class="verdict bad" id="verdict">—</div>
+
+        <div class="examples">
+          <span class="lbl">Примеры:</span>
+          <button type="button" class="ex" data-t="Кешбэк до&#160;3%" data-p="за&#160;билеты на&#160;поезда дальнего следования в&#160;«Туту», «Туту: ЖД&#160;билеты на&#160;поезда онлайн» и&#160;«Яндекс Путешествия»">длинный</button>
+          <button type="button" class="ex" data-t="Кешбэк до&#160;3%" data-p="за ЖД билеты в «Туту» и «Яндекс Путешествиях»">короткий</button>
+          <button type="button" class="ex" data-t="Скидка 10%" data-p="при покупке полиса «Ипотечное страхование» для заёмщиков банка ПАО «Сбербанк», Альфа-Банка, банка «ВТБ (ПАО)» по&#160;промокоду">со сносками</button>
+        </div>
+      </div>
+
+      <div class="mock-wrap">
+        <div class="mock" id="mock">
+          <div class="rainbow"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="mock-art"><span>здесь картинка</span></div>
+          <div class="mock-inner">
+            <div class="mock-col" id="col">
+              <div class="t" id="pv-t"></div>
+              <div class="p" id="pv-p"></div>
+            </div>
+          </div>
+          <div class="cutbadge" id="cutbadge" hidden></div>
+        </div>
+        <p class="caption" id="mock-cap"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="rainbow"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <p class="eyebrow">Коротко</p>
+  <h2>Три числа, которые стоит помнить</h2>
+  <div class="spec">
+    <div><b>20</b><span>символов в заголовке</span></div>
+    <div><b>70</b><span>символов в описании</span></div>
+    <div><b>13</b><span>символов в самом длинном слове</span></div>
+  </div>
+  <p class="caption" style="max-width:60ch">С такими цифрами текст точно встанет на любом телефоне. Можно и больше — но тогда лучше проверить в форме выше.</p>
+</section>
+
+<section>
+  <div class="rainbow"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <p class="eyebrow">Почему так мало</p>
+  <h2>Справа стоит картинка, и текст в неё не заходит</h2>
+  <p>Картинка акции занимает почти половину баннера. Тексту остаётся узкая полоса слева — в неё помещается примерно <b>14 букв в строке</b> описания и <b>9 букв</b> в строке заголовка. По высоте — около восьми строк на заголовок и описание вместе.</p>
+  <p>Когда строк больше, баннер не становится выше. Он обрезает текст сверху и снизу одновременно, потому что блок стоит по центру. Поэтому у длинных баннеров пропадает и верх заголовка, и хвост описания.</p>
+
+  <div class="mocks">
+    <div class="mock-wrap">
+      <div class="mock-label is-ok"><i class="dot"></i>65 символов — влезает</div>
+      <div class="mock">
+        <div class="rainbow"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="mock-art"><span>здесь картинка</span></div>
+        <div class="mock-inner">
+          <div class="mock-col js-demo"
+               data-t="Кешбэк 5%"
+               data-p="за&#160;оплату билета до&#160;аэропортов Шереметьево и&#160;Домодедово через СБП">
+            <div class="t"></div>
+            <div class="p"></div>
+          </div>
+        </div>
+      </div>
+      <p class="caption">Заголовок в строку, описание в пять. Остаётся запас.</p>
+    </div>
+
+    <div class="mock-wrap">
+      <div class="mock-label is-bad"><i class="dot"></i>107 символов — обрезано</div>
+      <div class="mock">
+        <div class="rainbow"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="mock-art"><span>здесь картинка</span></div>
+        <div class="mock-inner">
+          <div class="mock-col js-demo"
+               data-t="Кешбэк до&#160;3%"
+               data-p="за&#160;билеты на&#160;поезда дальнего следования в&#160;«Туту», «Туту: ЖД&#160;билеты на&#160;поезда онлайн» и&#160;«Яндекс Путешествия»">
+            <div class="t"></div>
+            <div class="p"></div>
+          </div>
+        </div>
+      </div>
+      <p class="caption">Описание разъехалось на десять строк. Заголовку срезало верх, описанию — конец.</p>
+    </div>
+  </div>
+  <p class="caption" style="max-width:60ch">Оба баннера показаны в натуральную величину — ровно так они выглядят на телефоне.</p>
+</section>
+
+<section>
+  <div class="rainbow"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <p class="eyebrow">Обмен</p>
+  <h2>Длинный заголовок съедает описание</h2>
+  <p>Заголовок и описание делят одну и ту же высоту. Каждая лишняя строка заголовка забирает больше строки у описания — буквы в заголовке крупнее.</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Заголовок</th><th>Это примерно</th><th>Тогда описание</th><th>Это примерно</th></tr></thead>
+      <tbody>
+        <tr><td>1 строка</td><td class="n">до 10 символов</td><td>7 строк</td><td class="n">до 90 символов</td></tr>
+        <tr><td>2 строки</td><td class="n">до 20 символов</td><td>6 строк</td><td class="n">до 80 символов</td></tr>
+        <tr><td>3 строки</td><td class="n">до 30 символов</td><td>5 строк</td><td class="n">до 70 символов</td></tr>
+        <tr><td>4 строки</td><td class="n">до 40 символов</td><td>4 строки</td><td class="n">до 60 символов</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Как обстоят дела сейчас</h3>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Баннер</th><th>Символов в описании</th><th>На обычном телефоне</th></tr></thead>
+      <tbody>
+        <tr><td>Кешбэк 5% · Аэроэкспресс</td><td class="n">65</td><td><span class="tag ok">влезает</span></td></tr>
+        <tr><td>Получите в 3 раза больше кешбэка</td><td class="n">38</td><td><span class="tag ok">впритык</span></td></tr>
+        <tr><td>Кешбэк до 3% · Туту</td><td class="n">107</td><td><span class="tag bad">обрезано</span></td></tr>
+        <tr><td>Скидка 10% · Согласие</td><td class="n">122</td><td><span class="tag bad">обрезано</span></td></tr>
+        <tr><td>Скидка 15% · la</td><td class="n">104</td><td><span class="tag bad">обрезано</span></td></tr>
+        <tr><td>Скидка 12% / 20% / 25% / до 35%</td><td class="n">47–70</td><td><span class="tag ok">влезает</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="caption" style="max-width:60ch">Граница проходит где-то между 70 и 100 символами: всё, что длиннее, уже режется.</p>
+</section>
+
+<section>
+  <div class="rainbow"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <p class="eyebrow">Ловушка первая</p>
+  <h2>Длинное слово не переносится, а вылезает на картинку</h2>
+  <p>Переносов по слогам в баннере нет. Если слово шире колонки, оно не разрывается — оно просто выезжает вправо и ложится поверх картинки.</p>
+
+  <div class="worddemo">
+    <div>
+      <div class="mock-label is-ok"><i class="dot"></i>в описании</div>
+      <div class="wordbox">Шереметьево<br>аэропортов<br>единовременно<br><span class="over">предпочтительный</span></div>
+      <p class="caption">Спокойно помещается слово до 13 букв.</p>
+    </div>
+    <div>
+      <div class="mock-label is-bad"><i class="dot"></i>в заголовке</div>
+      <div class="wordbox t24">Кешбэк<br>Скидка<br><span class="over">Путешествия</span></div>
+      <p class="caption">Здесь буквы крупнее, поэтому предел — 9 букв.</p>
+    </div>
+  </div>
+
+  <ul class="rules">
+    <li>В заголовке не ставьте слова длиннее 9 букв: «Путешествия», «Финподушку», «страхование» уже вылезут.</li>
+    <li>В описании держитесь 13 букв. «Единовременно», «предложениям» — на самой границе.</li>
+    <li>Слова с дефисом безопасны: «интернет-магазин» и «онлайн-оплата» переносятся по дефису.</li>
+  </ul>
+</section>
+
+<section>
+  <div class="rainbow"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <p class="eyebrow">Ловушка вторая</p>
+  <h2>Неразрывные пробелы добавляют строк</h2>
+  <p>Неразрывный пробел склеивает два слова в одно длинное, которое нельзя разорвать. В широком макете это незаметно, а в узкой колонке баннера каждая такая склейка может отправить целое слово на новую строку.</p>
+  <p>У баннера про Туту шесть неразрывных пробелов: <span class="nbsp-demo">за&#160;билеты</span>, <span class="nbsp-demo">на&#160;поезда</span>, <span class="nbsp-demo">в&#160;«Туту»</span>, <span class="nbsp-demo">ЖД&#160;билеты</span>. Из-за них строк получается на две больше, чем было бы с обычными пробелами. Именно эти две строки и вылезли за край.</p>
+
+  <ul class="rules">
+    <li>В баннере неразрывные пробелы нужны реже, чем в обычном тексте: строки и так короткие.</li>
+    <li>Оставляйте их там, где разрыв реально испортит смысл: «5&#160;%», «до&#160;3&#160;%», «1000&#160;₽».</li>
+    <li>После предлогов «за», «на», «в», «по» в баннере их лучше убрать.</li>
+    <li>Форма выше считает неразрывные пробелы как есть — вставляйте текст прямо из макета, вместе с ними.</li>
+  </ul>
+</section>
+
+<section>
+  <div class="rainbow"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <p class="eyebrow">Как сокращать</p>
+  <h2>Три живых баннера и их короткие версии</h2>
+  <p>Первое, что стоит вынести из баннера на страницу акции: полные названия юрлиц, перечисления партнёров и условия со звёздочкой.</p>
+
+  <div class="pair">
+    <div class="pair-row was">
+      <div class="mark">✕</div>
+      <div class="txt"><strong>Кешбэк до 3%</strong>за билеты на поезда дальнего следования в «Туту», «Туту: ЖД билеты на поезда онлайн» и «Яндекс Путешествия»</div>
+      <div class="cnt">107</div>
+    </div>
+    <div class="pair-row now">
+      <div class="mark">✓</div>
+      <div class="txt"><strong>Кешбэк до 3%</strong>за ЖД билеты в «Туту» и «Яндекс Путешествиях»</div>
+      <div class="cnt">45</div>
+    </div>
+  </div>
+
+  <div class="pair">
+    <div class="pair-row was">
+      <div class="mark">✕</div>
+      <div class="txt"><strong>Скидка 10%</strong>при покупке полиса «Ипотечное страхование» для заёмщиков банка ПАО «Сбербанк», Альфа-Банка, банка «ВТБ (ПАО)» по промокоду</div>
+      <div class="cnt">122</div>
+    </div>
+    <div class="pair-row now">
+      <div class="mark">✓</div>
+      <div class="txt"><strong>Скидка 10%</strong>на полис «Ипотечное страхование» по промокоду</div>
+      <div class="cnt">44</div>
+    </div>
+  </div>
+
+  <div class="pair">
+    <div class="pair-row was">
+      <div class="mark">✕</div>
+      <div class="txt"><strong>Скидка 15%</strong>на онлайн-оплату, при оплате доставки курьером и в пунктах выдачи заказа для новых клиентов по промокоду</div>
+      <div class="cnt">104</div>
+    </div>
+    <div class="pair-row now">
+      <div class="mark">✓</div>
+      <div class="txt"><strong>Скидка 15%</strong>новым клиентам на первый заказ по промокоду</div>
+      <div class="cnt">43</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Все цифры сняты с живого сайта vamprivet.ru. Форма проверки считает строки тем же шрифтом и той же шириной, что и сайт, поэтому её ответ совпадает с тем, что увидит пользователь на телефоне.
+</footer>
+
+</div>
+
+<script>
+(function () {
+  /* Ширина каждой буквы шрифта Gotham, снятая с сайта:
+     GP — для описания, GT — для заголовка.
+     Благодаря им строки ломаются ровно так же, как в проде. */
+  var GP = {" ":4.8,"!":4.34,"\"":7.04,"%":13.34,"&":11.14,"'":3.92,"(":6.94,")":6.94,"*":6.88,"+":10,",":3.92,"-":6.53,".":3.9,"/":8.13,":":4.06,";":4.08,"?":8.59,"0":11.44,"1":5.73,"2":9.58,"3":9.81,"4":10.74,"5":9.79,"6":10.35,"7":9.54,"8":10.08,"9":10.35,"A":12.64,"B":11.55,"C":11.87,"D":12.51,"E":10.72,"F":10.5,"G":12.54,"H":12.16,"I":4.66,"J":8.85,"K":11.5,"L":9.84,"M":13.89,"N":12.64,"O":13.6,"P":10.69,"Q":13.6,"R":11.57,"S":10.24,"T":10.26,"U":12.14,"V":12,"W":17.71,"X":11.6,"Y":11.46,"Z":11.09,"a":9.26,"b":10.62,"c":9.14,"d":10.62,"e":9.47,"f":5.87,"g":10.62,"h":9.86,"i":4.21,"j":4.21,"k":9.1,"l":4.21,"m":15.17,"n":9.86,"o":10.34,"p":10.62,"q":10.62,"r":6.48,"s":7.97,"t":6.46,"u":9.86,"v":9.39,"w":13.78,"x":9.18,"y":9.46,"z":8.9,"«":8.8,"»":8.8,"–":8.45,"—":14.37,"№":17.97,"Ё":10.72,"А":12.64,"Б":11.23,"В":11.55,"Г":9.84,"Д":13.55,"Е":10.72,"Ж":16.96,"З":10.54,"И":12.64,"Й":12.64,"К":11.55,"Л":12.34,"М":13.89,"Н":12.16,"О":13.6,"П":12.14,"Р":10.69,"С":11.87,"Т":10.26,"У":11.34,"Ф":14.66,"Х":11.6,"Ц":12.38,"Ч":11.23,"Ш":17.6,"Щ":17.84,"Ъ":13.5,"Ы":14.98,"Ь":10.7,"Э":11.87,"Ю":17.46,"Я":11.57,"а":9.26,"б":10.34,"в":9.55,"г":7.87,"д":10.46,"е":9.47,"ж":13.89,"з":8.88,"и":10.21,"й":10.21,"к":9.15,"л":9.76,"м":11.6,"н":10.16,"о":10.34,"п":10.13,"р":10.62,"с":9.14,"т":8.78,"у":9.46,"ф":13.25,"х":9.18,"ц":10.37,"ч":9.41,"ш":14.78,"щ":14.83,"ъ":10.8,"ы":12.51,"ь":9.02,"э":9.2,"ю":13.87,"я":9.73,"ё":9.47};
+  var GT = {" ":7.2,"!":7.25,"\"":11.69,"%":20.38,"&":16.7,"'":6.46,"(":10.58,")":10.58,"*":10.32,"+":15.22,",":6.46,"-":9.79,".":6.46,"/":12.5,":":6.7,";":6.7,"?":12.98,"0":17.38,"1":9.5,"2":14.71,"3":14.83,"4":16.37,"5":14.95,"6":15.74,"7":14.62,"8":15.12,"9":15.74,"A":18.96,"B":17.33,"C":17.74,"D":18.77,"E":16.08,"F":15.74,"G":18.82,"H":18.24,"I":7.61,"J":13.44,"K":17.42,"L":14.83,"M":20.83,"N":18.96,"O":20.4,"P":16.03,"Q":20.4,"R":17.35,"S":15.36,"T":15.48,"U":18.17,"V":18,"W":26.78,"X":17.5,"Y":17.18,"Z":16.85,"a":14.09,"b":16.1,"c":13.7,"d":16.1,"e":14.5,"f":9.02,"g":16.1,"h":14.88,"i":6.86,"j":6.86,"k":13.97,"l":6.86,"m":22.78,"n":14.88,"o":15.77,"p":16.1,"q":16.1,"r":9.91,"s":12.02,"t":9.86,"u":14.88,"v":14.28,"w":20.66,"x":13.92,"y":14.3,"z":13.44,"«":14.54,"»":14.54,"–":12.67,"—":21.55,"№":27.07,"Ё":16.08,"А":18.96,"Б":16.94,"В":17.33,"Г":14.83,"Д":20.26,"Е":16.08,"Ж":25.92,"З":15.94,"И":18.96,"Й":18.96,"К":17.59,"Л":18.5,"М":20.83,"Н":18.24,"О":20.4,"П":18.14,"Р":16.03,"С":17.74,"Т":15.48,"У":17.23,"Ф":22.82,"Х":17.5,"Ц":18.79,"Ч":17.02,"Ш":26.81,"Щ":27.43,"Ъ":20.09,"Ы":23.06,"Ь":16.13,"Э":17.69,"Ю":26.59,"Я":17.35,"а":14.09,"б":15.67,"в":14.3,"г":12.07,"д":16.06,"е":14.5,"ж":21.41,"з":13.42,"и":15.31,"й":15.31,"к":14.21,"л":14.93,"м":17.45,"н":15.29,"о":15.77,"п":15.29,"р":16.1,"с":13.7,"т":13.51,"у":14.3,"ф":20.21,"х":13.92,"ц":15.79,"ч":14.23,"ш":22.51,"щ":22.92,"ъ":16.2,"ы":19.44,"ь":13.54,"э":13.78,"ю":21.34,"я":14.5,"ё":14.5};
+  var NBSP = '\u00a0';
+
+  var inT = document.getElementById('in-t'),
+      inP = document.getElementById('in-p'),
+      pvT = document.getElementById('pv-t'),
+      pvP = document.getElementById('pv-p'),
+      col = document.getElementById('col'),
+      mock = document.getElementById('mock'),
+      cutbadge = document.getElementById('cutbadge'),
+      fill = document.getElementById('fill'),
+      verdict = document.getElementById('verdict'),
+      cT = document.getElementById('c-t'),
+      cP = document.getElementById('c-p'),
+      cap = document.getElementById('mock-cap'),
+      btns = Array.prototype.slice.call(document.querySelectorAll('.widths button'));
+
+  var BUDGET = 232, vw = 375;
+
+  function plural(n, one, few, many) {
+    var m10 = n % 10, m100 = n % 100;
+    if (m10 === 1 && m100 !== 11) return one;
+    if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return few;
+    return many;
+  }
+
+  function charW(ch, tbl) {
+    if (ch === NBSP) return tbl[' '];
+    var v = tbl[ch];
+    return v === undefined ? tbl['о'] : v;
+  }
+  function w(str, tbl) {
+    var sum = 0;
+    for (var i = 0; i < str.length; i++) sum += charW(str[i], tbl);
+    return sum;
+  }
+
+  /* Куски, между которыми браузер может перенести строку.
+     Обычный пробел — можно. Неразрывный — нельзя. После дефиса — можно. */
+  function tokenize(str) {
+    var tokens = [], words = str.split(/[ \t\n\r]+/);
+    for (var i = 0; i < words.length; i++) {
+      var word = words[i];
+      if (!word) continue;
+      var piece = '', first = true;
+      for (var j = 0; j < word.length; j++) {
+        piece += word[j];
+        var isHyphen = (word[j] === '-' || word[j] === '–' || word[j] === '—');
+        if (isHyphen && j < word.length - 1) {
+          tokens.push({ t: piece, sp: first }); piece = ''; first = false;
+        }
+      }
+      if (piece) tokens.push({ t: piece, sp: first });
+    }
+    return tokens;
+  }
+
+  function wrap(str, tbl, maxW) {
+    if (!str) return [];
+    var tokens = tokenize(str), lines = [], cur = '', curW = 0, spaceW = tbl[' '];
+    for (var i = 0; i < tokens.length; i++) {
+      var tok = tokens[i], tokW = w(tok.t, tbl), pre = (tok.sp && cur) ? spaceW : 0;
+      if (cur && curW + pre + tokW > maxW) { lines.push(cur); cur = tok.t; curW = tokW; }
+      else { cur += (pre ? ' ' : '') + tok.t; curW += pre + tokW; }
+    }
+    if (cur) lines.push(cur);
+    return lines;
+  }
+
+  function longWords(str, tbl, maxW) {
+    var out = [];
+    tokenize(str).forEach(function (tok) {
+      if (w(tok.t, tbl) > maxW) out.push('«' + tok.t.replace(/\u00a0/g, ' ') + '»');
+    });
+    return out;
+  }
+
+  /* Рисуем каждую строку отдельно и подгоняем трекинг,
+     чтобы системный шрифт занимал ту же ширину, что Gotham. */
+  function paint(el, lines, tbl, sizePx, weight) {
+    el.innerHTML = '';
+    if (!lines.length) { el.style.display = 'none'; return; }
+    el.style.display = '';
+    var probe = paint.probe || (paint.probe = document.createElement('canvas').getContext('2d'));
+    probe.font = weight + ' ' + sizePx + 'px ' + getComputedStyle(el).fontFamily;
+    var joined = lines.join(' ');
+    var track = joined.length ? (w(joined, tbl) - probe.measureText(joined).width) / joined.length : 0;
+    el.style.letterSpacing = Math.max(-0.5, Math.min(3, track)).toFixed(2) + 'px';
+    lines.forEach(function (ln) {
+      var d = document.createElement('div');
+      d.textContent = ln;
+      el.appendChild(d);
+    });
+  }
+
+  function clean(v) { return v.replace(/[ \t\n\r]+/g, ' ').trim(); }
+
+  function render() {
+    var colW = vw - 220;
+    mock.style.width = (vw - 40) + 'px';
+    col.style.width = colW + 'px';
+
+    var t = clean(inT.value), p = clean(inP.value);
+    var perLine = Math.round(colW / GP['о'] * 0.92);
+
+    cT.textContent = t.length + ' ' + plural(t.length, 'символ', 'символа', 'символов');
+    cP.textContent = p.length + ' ' + plural(p.length, 'символ', 'символа', 'символов');
+
+    var tLines = wrap(t, GT, colW), pLines = wrap(p, GP, colW);
+    paint(pvT, tLines, GT, 24, 500);
+    paint(pvP, pLines, GP, 16, 400);
+
+    var need = tLines.length * 28 + (tLines.length ? 12 : 0) + pLines.length * 22 + (pLines.length ? 20 : 0);
+    var over = need - BUDGET;
+
+    fill.style.width = Math.min(100, Math.round(need / BUDGET * 100)) + '%';
+    fill.style.background = over > 0 ? 'var(--bad)' : (need > BUDGET * 0.9 ? 'var(--warn)' : 'var(--brand)');
+
+    var notes = [];
+
+    /* сколько строк добавили неразрывные пробелы */
+    var nbspCount = (t + ' ' + p).split(NBSP).length - 1;
+    if (nbspCount) {
+      var loose = wrap(t.replace(/\u00a0/g, ' '), GT, colW).length +
+                  wrap(p.replace(/\u00a0/g, ' '), GP, colW).length;
+      var costLines = (tLines.length + pLines.length) - loose;
+      if (costLines > 0) {
+        notes.push('Неразрывные пробелы (' + nbspCount + ' шт.) добавили ' + costLines + ' ' +
+          plural(costLines, 'лишнюю строку', 'лишние строки', 'лишних строк') +
+          '. Часть из них можно заменить на обычные.');
+      }
+    }
+
+    var spill = longWords(t, GT, colW).concat(longWords(p, GP, colW));
+    if (spill.length) {
+      notes.push('Не помещается по ширине и выедет на картинку: ' + spill.join(', ') + '.');
+    }
+
+    var head;
+    if (over > 0) {
+      var cutChars = Math.ceil(over / 22 * perLine);
+      head = 'Не влезает. Сократите примерно на ' + cutChars + ' ' +
+             plural(cutChars, 'символ', 'символа', 'символов') + '.';
+    } else {
+      var spare = Math.floor(-over / 22) * perLine;
+      head = spare > perLine
+        ? 'Влезает, ещё есть запас примерно на ' + spare + ' ' + plural(spare, 'символ', 'символа', 'символов') + '.'
+        : 'Влезает, но впритык — запаса почти нет.';
+    }
+
+    verdict.className = 'verdict ' + (over > 0 || spill.length ? 'bad' : 'ok');
+    verdict.innerHTML = '<div class="v-title">' + head + '</div>' +
+      (notes.length ? '<ul><li>' + notes.join('</li><li>') + '</li></ul>' : '');
+
+    cT.className = t.length > 20 ? 'over' : '';
+    cP.className = p.length > 70 ? 'over' : '';
+
+    cap.textContent = 'Заголовок: ' + tLines.length + ' ' +
+      plural(tLines.length, 'строка', 'строки', 'строк') + ' · описание: ' + pLines.length + ' ' +
+      plural(pLines.length, 'строка', 'строки', 'строк');
+
+    var startY = 8 + (BUDGET - need) / 2;
+    var cutTop = Math.max(0, Math.round(-startY)), cutBot = Math.max(0, Math.round(startY + need - 240));
+    if (cutTop || cutBot) {
+      cutbadge.hidden = false;
+      cutbadge.textContent = 'обрезано';
+      mock.classList.add('is-over');
+    } else {
+      cutbadge.hidden = true;
+      mock.classList.remove('is-over');
+    }
+  }
+
+  btns.forEach(function (b) {
+    b.addEventListener('click', function () {
+      btns.forEach(function (x) { x.removeAttribute('aria-pressed'); });
+      b.setAttribute('aria-pressed', 'true');
+      vw = +b.dataset.w;
+      render();
+    });
+  });
+
+  Array.prototype.forEach.call(document.querySelectorAll('.ex'), function (b) {
+    b.addEventListener('click', function () {
+      inT.value = b.dataset.t; inP.value = b.dataset.p; render();
+    });
+  });
+
+  /* Браузер восстанавливает содержимое полей при перезагрузке,
+     поэтому исходный пример проставляем сами. Пробелы здесь неразрывные —
+     ровно те, что стоят в тексте баннера на сайте. */
+  inT.value = 'Кешбэк до 3%';
+  inP.value = 'за билеты на поезда дальнего следования в «Туту», «Туту: ЖД билеты на поезда онлайн» и «Яндекс Путешествия»';
+
+  inT.addEventListener('input', render);
+  inP.addEventListener('input', render);
+  window.__wrap = function (s, which, maxW) { return wrap(s, which === 't' ? GT : GP, maxW); };
+  render();
+
+  /* Примеры в тексте гайда рисуем тем же движком, что и проверку,
+     чтобы строки в них ломались ровно как на сайте. */
+  Array.prototype.forEach.call(document.querySelectorAll('.js-demo'), function (demo) {
+    var colW = demo.getBoundingClientRect().width;
+    paint(demo.querySelector('.t'), wrap(demo.dataset.t, GT, colW), GT, 24, 500);
+    paint(demo.querySelector('.p'), wrap(demo.dataset.p, GP, colW), GP, 16, 400);
+  });
+})();
+</script>
